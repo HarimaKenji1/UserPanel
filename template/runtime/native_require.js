@@ -17,6 +17,7 @@ var game_file_list = [
 	"bin-debug/Task.js",
 	"bin-debug/ScreenService.js",
 	"bin-debug/TileNode.js",
+	"bin-debug/UserPanel.js",
 	//----auto game_file_list end----
 ];
 

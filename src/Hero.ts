@@ -79,6 +79,10 @@ class User{
         return result;
     }
 
+    changeHeroTeam(heroToUp , heroToDown){
+
+    }
+
     
 }
 
@@ -94,14 +98,29 @@ class Hero{
     level = 1;
     currentExp = 0;
     totalExp = 0;
+    property : Property[] = [];
+    heroBitemap : egret.Bitmap;
     //__equipmentsOnEquip : Equipment[] = [];
     __weaponsOnEquip : Weapon[] = [];
     __armorOnEquip : Armor[] = [];
+    color;
 
-    constructor(name : string, quality : Quality, level : number){
+    constructor(name : string, quality : Quality, level : number,heroBitmap : string){
        this.name = name;
        this.quality = quality;
        this.level = level;
+       this.heroBitemap = new egret.Bitmap();
+       this.heroBitemap.texture = RES.getRes(heroBitmap);
+       if(this.quality == Quality.WHITE)
+        this.color = 0xffffff;
+        if(this.quality == Quality.BLUE)
+        this.color = 0x0000dd;
+        if(this.quality == Quality.GREEN)
+        this.color = 0x00dd00;
+        if(this.quality == Quality.PURPLE)
+        this.color == 0x6c1f7c;
+        if(this.quality == Quality.ORAGE)
+        this.color = 0xf4a315;
     }
 
      @Cache
@@ -124,6 +143,7 @@ class Hero{
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getFightPower() * 0.2);
         this.__armorOnEquip.forEach(armor => result += armor.getFightPower() * 0.8);
         result += this.level * 10 * this.quality;
+        this.property[0]=new Property("最大生命值",result,false);
         return result;
     }
     
@@ -132,6 +152,7 @@ class Hero{
         var result = 0;
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getAttack() * 0.5);
         result += this.level * 5 * this.quality;
+        this.property[1]=new Property("攻击力",result,false);
         return result;
     }
 
@@ -140,6 +161,7 @@ class Hero{
         var result = 0;
         this.__armorOnEquip.forEach(armor => result += armor.getDefence() * 0.2);
         result += this.level * 2 * this.quality;
+        this.property[2]=new Property("防御力",result,false);
         return result;
     }
 
@@ -149,6 +171,7 @@ class Hero{
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getAglie() * 0.4);
         this.__armorOnEquip.forEach(armor => result += armor.getAglie() * 0.4);
         result += this.level * 4 * this.quality;
+        this.property[3]=new Property("敏捷",result,false);
         return result;
     }
 
@@ -171,7 +194,8 @@ class Equipment{
     isWeapon = false;
     name : string = "";
     __jewelOnEquip : Jewel[] = [];
-
+    equipmentBitmap : egret.Bitmap;
+    color;
     //  @Cache
     //  getTotalExp(){
     //      this.totalExp = (this.level + 20) * this.level;
@@ -193,13 +217,26 @@ class Weapon extends Equipment{
      //attack = 0;
      isWeapon = true;
      weaponType = 0;
+     property : Property[] = [];
 
-     constructor(name : string ,quality : number , weaponType : WeaponType){
+     constructor(name : string ,quality : number , weaponType : WeaponType,weaponIconId : string){
          super();
          this.name = name;
          this.quality = quality;
          //this.level = level;
          this.weaponType = weaponType;
+         this.equipmentBitmap = new egret.Bitmap();
+         this.equipmentBitmap.texture = RES.getRes(weaponIconId);
+         if(this.quality == Quality.WHITE)
+        this.color = 0xffffff;
+        if(this.quality == Quality.BLUE)
+        this.color = 0x0000dd;
+        if(this.quality == Quality.GREEN)
+        this.color = 0x00dd00;
+        if(this.quality == Quality.PURPLE)
+        this.color == 0x6c1f7c;
+        if(this.quality == Quality.ORAGE)
+        this.color = 0xf4a315;
 
      }
 
@@ -209,6 +246,7 @@ class Weapon extends Equipment{
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower() * 0.4);
          result += 10 * this.weaponType * this.quality; 
+         this.property[0]=new Property("攻击力",result,false);
          return result;
      }
 
@@ -217,6 +255,7 @@ class Weapon extends Equipment{
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower() * 0.4);
          result += 5 * this.quality / this.weaponType; 
+         this.property[1]=new Property("敏捷",result,false);
          return result;
      }
 
@@ -234,13 +273,25 @@ class Armor extends Equipment{
      //defence = 0;
      armorType = 0;
      isWeapon = false;
+     property : Property[] = [];
 
-     constructor(name : string,quality : number , armorType : ArmorType){
+     constructor(name : string,quality : number , armorType : ArmorType,armorIconId : string){
          super();
          this.name = name;
          this.quality = quality;
          this.armorType = armorType;
-
+         this.equipmentBitmap = new egret.Bitmap();
+         this.equipmentBitmap.texture = RES.getRes(armorIconId);
+         if(this.quality == Quality.WHITE)
+        this.color = 0xffffff;
+        if(this.quality == Quality.BLUE)
+        this.color = 0x0000dd;
+        if(this.quality == Quality.GREEN)
+        this.color = 0x00dd00;
+        if(this.quality == Quality.PURPLE)
+        this.color == 0x6c1f7c;
+        if(this.quality == Quality.ORAGE)
+        this.color = 0xf4a315;
      }
 
      
@@ -250,6 +301,7 @@ class Armor extends Equipment{
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower() * 0.4);
          result += 6 * this.armorType * this.quality; 
+         this.property[0]=new Property("防御力",result,false);
          return result;
      }
 
@@ -258,6 +310,7 @@ class Armor extends Equipment{
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower() * 0.4);
          result += 5 * this.quality / this.armorType; 
+         this.property[1]=new Property("敏捷",result,false);
          return result;
      }
 
@@ -272,10 +325,22 @@ class Armor extends Equipment{
 
 class Jewel{
     quality  = 0;
+    color;
     //promotionType = 0;
 
     constructor(quality : number){
         this.quality = quality;
+        if(this.quality == Quality.WHITE)
+        this.color = 0xffffff;
+        if(this.quality == Quality.BLUE)
+        this.color = 0x0000dd;
+        if(this.quality == Quality.GREEN)
+        this.color = 0x00dd00;
+        if(this.quality == Quality.PURPLE)
+        this.color == 0x6c1f7c;
+        if(this.quality == Quality.ORAGE)
+        this.color = 0xf4a315;
+
     }
 
     @Cache
@@ -284,4 +349,36 @@ class Jewel{
         result = this.quality * 10;
         return result;
     }
+}
+
+class Property{
+    name : string;
+    value : number;
+    isRate : boolean;
+    constructor(name : string, value : number,isRate:boolean){
+        this.name = name;
+        this.value = value;
+        this.isRate = isRate;
+    }
+
+    getDescription(){
+        if(this.isRate){
+            return this.name + ": +" +(this.value / 10).toFixed(2) + "%";
+        }else{
+            return this.name + ": +" + this.value;
+        }
+    }
+}
+
+class Properties{
+    all:string[] = [
+        "攻击力",
+        "防御力",
+        "敏捷",
+        "品质"
+    ]
+}
+
+class Package{
+
 }

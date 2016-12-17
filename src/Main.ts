@@ -169,6 +169,8 @@ class Main extends egret.DisplayObjectContainer {
     private hero : Hero;
     private sword : Weapon;
     private helment : Armor;
+    private corseler : Armor;
+    private shoes : Armor;
     private weaponJewel : Jewel;
     private armorJewel : Jewel;
 
@@ -253,16 +255,22 @@ class Main extends egret.DisplayObjectContainer {
          this.astar = new AStar();
 
          this.user = new User("Player01",1);
-         this.hero = new Hero("Hero01",Quality.WHITE,1);
-         this.sword = new Weapon("sword",Quality.WHITE,WeaponType.HANDSWORD);
-         this.helment = new Armor("helment",Quality.WHITE,ArmorType.LIGHTARMOR);
-         this.weaponJewel = new Jewel(Quality.WHITE);
+         this.hero = new Hero("FemaleSaberHero01",Quality.WHITE,1,"FemaleSaberHero01_png");
+         this.sword = new Weapon("Leagendsword01",Quality.ORAGE,WeaponType.HANDSWORD,"OrangeSword01_png");
+         this.helment = new Armor("Purplrhelment01",Quality.PURPLE,ArmorType.LIGHTARMOR,"PurpleHelmet01_png");
+         this.corseler = new Armor("GreenCorseler01",Quality.GREEN,ArmorType.LIGHTARMOR,"GreenCorseler01_png");
+         this.shoes = new Armor("BlueShoes01",Quality.BLUE,ArmorType.LIGHTARMOR,"BlueShoes01_png");
+         this.weaponJewel = new Jewel(Quality.ORAGE);
          this.armorJewel = new Jewel(Quality.WHITE);
          
          this.sword.addJewl(this.weaponJewel);
          this.helment.addJewl(this.armorJewel);
+         this.corseler.addJewl(this.armorJewel);
+         this.shoes.addJewl(this.armorJewel);
          this.hero.addWeapon(this.sword);
          this.hero.addArmor(this.helment);
+         this.hero.addArmor(this.corseler);
+         this.hero.addArmor(this.shoes);
          this.user.addHeroInTeam(this.hero);
          this.user.addHeros(this.hero);
 
@@ -271,13 +279,15 @@ class Main extends egret.DisplayObjectContainer {
          console.log(this.hero.getDefence());
          console.log(this.hero.getAglie());
          console.log(this.hero.getMaxHP());
-         console.log("weaponJewel fightpower :" + this.weaponJewel.getFightPower());
-         console.log("armorJewel fightpower :" + this.armorJewel.getFightPower());
-         console.log("sword fightpower :" + this.sword.getFightPower());
-         console.log("helment fightpower :" + this.helment.getFightPower());
-         console.log("helment defence :" + this.helment.getDefence());
-         console.log("helment aglie :" + this.helment.getAglie());
-         console.log("hero fightpower :" + this.hero.getFightPower());
+         console.log("weaponJewel fightpower :" + this.weaponJewel.getFightPower().toFixed(0));
+         console.log("armorJewel fightpower :" + this.armorJewel.getFightPower().toFixed(0));
+         console.log("sword fightpower :" + this.sword.getFightPower().toFixed(0));
+         console.log("helment fightpower :" + this.helment.getFightPower().toFixed(0));
+         console.log("helment defence :" + this.helment.getDefence().toFixed(0));
+         console.log("helment aglie :" + this.helment.getAglie().toFixed(0));
+         console.log("hero fightpower :" + this.hero.getFightPower().toFixed(0));
+
+         
 
          
        
