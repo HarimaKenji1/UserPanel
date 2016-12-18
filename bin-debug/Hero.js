@@ -45,6 +45,16 @@ var JewelPromotion;
     JewelPromotion[JewelPromotion["DEFENCEPRMOTE"] = 2] = "DEFENCEPRMOTE";
     JewelPromotion[JewelPromotion["AGILEPRMOTE"] = 3] = "AGILEPRMOTE";
 })(JewelPromotion || (JewelPromotion = {}));
+var HeroType;
+(function (HeroType) {
+    HeroType[HeroType["SABER"] = 0] = "SABER";
+    HeroType[HeroType["LANCER"] = 1] = "LANCER";
+    HeroType[HeroType["ARCHER"] = 2] = "ARCHER";
+    HeroType[HeroType["CASTER"] = 3] = "CASTER";
+    HeroType[HeroType["BASERKER"] = 4] = "BASERKER";
+    HeroType[HeroType["ASSASIN"] = 5] = "ASSASIN";
+    HeroType[HeroType["RIDER"] = 6] = "RIDER";
+})(HeroType || (HeroType = {}));
 var User = (function () {
     function User(name, level) {
         this.currentExp = 0;
@@ -86,7 +96,7 @@ var User = (function () {
 }());
 egret.registerClass(User,'User');
 var Hero = (function () {
-    function Hero(name, quality, level, heroBitmap) {
+    function Hero(heroID, name, quality, level, heroBitmapID, heroType) {
         this.isInTeam = false;
         this.name = "";
         this.quality = 0;
@@ -98,25 +108,18 @@ var Hero = (function () {
         this.level = 1;
         this.currentExp = 0;
         this.totalExp = 0;
-        this.property = [];
+        this.properties = [];
         //__equipmentsOnEquip : Equipment[] = [];
         this.__weaponsOnEquip = [];
         this.__armorOnEquip = [];
+        this.heroType = -1;
+        this.heroID = heroID;
         this.name = name;
         this.quality = quality;
         this.level = level;
-        this.heroBitemap = new egret.Bitmap();
-        this.heroBitemap.texture = RES.getRes(heroBitmap);
-        if (this.quality == Quality.WHITE)
-            this.color = 0xffffff;
-        if (this.quality == Quality.BLUE)
-            this.color = 0x0000dd;
-        if (this.quality == Quality.GREEN)
-            this.color = 0x00dd00;
-        if (this.quality == Quality.PURPLE)
-            this.color == 0x6c1f7c;
-        if (this.quality == Quality.ORAGE)
-            this.color = 0xf4a315;
+        this.heroBitemapID = heroBitmapID;
+        this.heroType = heroType;
+        this.color = GetColor.getColor(quality);
     }
     var d = __define,c=Hero,p=c.prototype;
     p.getTotalExp = function () {
@@ -124,31 +127,37 @@ var Hero = (function () {
         return this.totalExp;
     };
     p.addWeapon = function (weapon) {
-        this.__weaponsOnEquip.push(weapon);
+        this.__weaponsOnEquip[0] = weapon;
     };
-    p.addArmor = function (armor) {
-        this.__armorOnEquip.push(armor);
+    p.addHelment = function (helment) {
+        this.__armorOnEquip[0] = helment;
+    };
+    p.addCorseler = function (corseler) {
+        this.__armorOnEquip[1] = corseler;
+    };
+    p.addShoes = function (shoes) {
+        this.__armorOnEquip[2] = shoes;
     };
     p.getMaxHP = function () {
         var result = 0;
         this.__weaponsOnEquip.forEach(function (weapon) { return result += weapon.getFightPower() * 0.2; });
         this.__armorOnEquip.forEach(function (armor) { return result += armor.getFightPower() * 0.8; });
         result += this.level * 10 * this.quality;
-        this.property[0] = new Property("最大生命值", result, false);
+        this.properties[0] = new Property("最大生命值", result, false);
         return result;
     };
     p.getAttack = function () {
         var result = 0;
         this.__weaponsOnEquip.forEach(function (weapon) { return result += weapon.getAttack() * 0.5; });
         result += this.level * 5 * this.quality;
-        this.property[1] = new Property("攻击力", result, false);
+        this.properties[1] = new Property("攻击力", result, false);
         return result;
     };
     p.getDefence = function () {
         var result = 0;
         this.__armorOnEquip.forEach(function (armor) { return result += armor.getDefence() * 0.2; });
         result += this.level * 2 * this.quality;
-        this.property[2] = new Property("防御力", result, false);
+        this.properties[2] = new Property("防御力", result, false);
         return result;
     };
     p.getAglie = function () {
@@ -156,7 +165,7 @@ var Hero = (function () {
         this.__weaponsOnEquip.forEach(function (weapon) { return result += weapon.getAglie() * 0.4; });
         this.__armorOnEquip.forEach(function (armor) { return result += armor.getAglie() * 0.4; });
         result += this.level * 4 * this.quality;
-        this.property[3] = new Property("敏捷", result, false);
+        this.properties[3] = new Property("敏捷", result, false);
         return result;
     };
     p.getFightPower = function () {
@@ -197,6 +206,7 @@ var Equipment = (function () {
         this.isWeapon = false;
         this.name = "";
         this.__jewelOnEquip = [];
+        this.properties = [];
     }
     var d = __define,c=Equipment,p=c.prototype;
     //  @Cache
@@ -218,43 +228,38 @@ var Equipment = (function () {
 egret.registerClass(Equipment,'Equipment');
 var Weapon = (function (_super) {
     __extends(Weapon, _super);
-    function Weapon(name, quality, weaponType, weaponIconId) {
+    function Weapon(equipmentID, name, quality, weaponType, weaponIconId) {
         _super.call(this);
-        //attack = 0;
         this.isWeapon = true;
         this.weaponType = 0;
-        this.property = [];
+        this.equipmentID = equipmentID;
         this.name = name;
         this.quality = quality;
         //this.level = level;
         this.weaponType = weaponType;
-        this.equipmentBitmap = new egret.Bitmap();
-        this.equipmentBitmap.texture = RES.getRes(weaponIconId);
-        if (this.quality == Quality.WHITE)
-            this.color = 0xffffff;
-        if (this.quality == Quality.BLUE)
-            this.color = 0x0000dd;
-        if (this.quality == Quality.GREEN)
-            this.color = 0x00dd00;
-        if (this.quality == Quality.PURPLE)
-            this.color == 0x6c1f7c;
-        if (this.quality == Quality.ORAGE)
-            this.color = 0xf4a315;
+        this.equipmentBitmapID = weaponIconId;
+        this.color = GetColor.getColor(quality);
+        this.weaponID = Weapon.weaponNum.toString();
+        Weapon.weaponNum++;
     }
     var d = __define,c=Weapon,p=c.prototype;
     p.getAttack = function () {
         var result = 0;
         this.__jewelOnEquip.forEach(function (jewel) { return result += jewel.getFightPower() * 0.4; });
         result += 10 * this.weaponType * this.quality;
-        this.property[0] = new Property("攻击力", result, false);
+        this.properties[0] = new Property("攻击力", result, false);
         return result;
     };
     p.getAglie = function () {
         var result = 0;
         this.__jewelOnEquip.forEach(function (jewel) { return result += jewel.getFightPower() * 0.4; });
         result += 5 * this.quality / this.weaponType;
-        this.property[1] = new Property("敏捷", result, false);
+        this.properties[1] = new Property("敏捷", result, false);
         return result;
+    };
+    p.getEquipmentInformations = function () {
+        this.getAttack();
+        this.getAglie();
     };
     p.getFightPower = function () {
         var result = 0;
@@ -262,55 +267,39 @@ var Weapon = (function (_super) {
         result += this.getAttack() * this.quality * 10 + this.getAglie() * this.quality * 5;
         return result;
     };
-    __decorate([
-        Cache
-    ], p, "getAttack", null);
-    __decorate([
-        Cache
-    ], p, "getAglie", null);
-    __decorate([
-        Cache
-    ], p, "getFightPower", null);
+    //attack = 0;
+    Weapon.weaponNum = 0;
     return Weapon;
 }(Equipment));
 egret.registerClass(Weapon,'Weapon');
 var Armor = (function (_super) {
     __extends(Armor, _super);
-    function Armor(name, quality, armorType, armorIconId) {
+    function Armor(equipmentID, name, quality, armorType, armorIconId) {
         _super.call(this);
-        //defence = 0;
         this.armorType = 0;
         this.isWeapon = false;
-        this.property = [];
+        this.equipmentID = equipmentID;
         this.name = name;
         this.quality = quality;
         this.armorType = armorType;
-        this.equipmentBitmap = new egret.Bitmap();
-        this.equipmentBitmap.texture = RES.getRes(armorIconId);
-        if (this.quality == Quality.WHITE)
-            this.color = 0xffffff;
-        if (this.quality == Quality.BLUE)
-            this.color = 0x0000dd;
-        if (this.quality == Quality.GREEN)
-            this.color = 0x00dd00;
-        if (this.quality == Quality.PURPLE)
-            this.color == 0x6c1f7c;
-        if (this.quality == Quality.ORAGE)
-            this.color = 0xf4a315;
+        this.equipmentBitmapID = armorIconId;
+        this.color = GetColor.getColor(quality);
+        this.armorID = Armor.armorNum.toString();
+        Armor.armorNum++;
     }
     var d = __define,c=Armor,p=c.prototype;
     p.getDefence = function () {
         var result = 0;
         this.__jewelOnEquip.forEach(function (jewel) { return result += jewel.getFightPower() * 0.4; });
         result += 6 * this.armorType * this.quality;
-        this.property[0] = new Property("防御力", result, false);
+        this.properties[0] = new Property("防御力", result, false);
         return result;
     };
     p.getAglie = function () {
         var result = 0;
         this.__jewelOnEquip.forEach(function (jewel) { return result += jewel.getFightPower() * 0.4; });
         result += 5 * this.quality / this.armorType;
-        this.property[1] = new Property("敏捷", result, false);
+        this.properties[1] = new Property("敏捷", result, false);
         return result;
     };
     p.getFightPower = function () {
@@ -319,15 +308,12 @@ var Armor = (function (_super) {
         result += this.getDefence() * this.quality * 10 + this.getAglie() * this.quality * 5;
         return result;
     };
-    __decorate([
-        Cache
-    ], p, "getDefence", null);
-    __decorate([
-        Cache
-    ], p, "getAglie", null);
-    __decorate([
-        Cache
-    ], p, "getFightPower", null);
+    p.getEquipmentInformations = function () {
+        this.getDefence();
+        this.getAglie();
+    };
+    //defence = 0;
+    Armor.armorNum = 0;
     return Armor;
 }(Equipment));
 egret.registerClass(Armor,'Armor');
@@ -336,16 +322,7 @@ var Jewel = (function () {
     function Jewel(quality) {
         this.quality = 0;
         this.quality = quality;
-        if (this.quality == Quality.WHITE)
-            this.color = 0xffffff;
-        if (this.quality == Quality.BLUE)
-            this.color = 0x0000dd;
-        if (this.quality == Quality.GREEN)
-            this.color = 0x00dd00;
-        if (this.quality == Quality.PURPLE)
-            this.color == 0x6c1f7c;
-        if (this.quality == Quality.ORAGE)
-            this.color = 0xf4a315;
+        this.color = GetColor.getColor(quality);
     }
     var d = __define,c=Jewel,p=c.prototype;
     p.getFightPower = function () {
@@ -387,6 +364,8 @@ var Properties = (function () {
         ];
     }
     var d = __define,c=Properties,p=c.prototype;
+    p.getpropertieName = function () {
+    };
     return Properties;
 }());
 egret.registerClass(Properties,'Properties');
@@ -397,4 +376,25 @@ var Package = (function () {
     return Package;
 }());
 egret.registerClass(Package,'Package');
+var GetColor = (function () {
+    function GetColor() {
+    }
+    var d = __define,c=GetColor,p=c.prototype;
+    GetColor.getColor = function (quality) {
+        var color;
+        if (quality == Quality.WHITE)
+            color = 0xffffff;
+        if (quality == Quality.BLUE)
+            color = 0x0000dd;
+        if (quality == Quality.GREEN)
+            color = 0x00dd00;
+        if (quality == Quality.PURPLE)
+            color = 0x9a30d7;
+        if (quality == Quality.ORAGE)
+            color = 0xf4a315;
+        return color;
+    };
+    return GetColor;
+}());
+egret.registerClass(GetColor,'GetColor');
 //# sourceMappingURL=Hero.js.map

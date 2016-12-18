@@ -40,6 +40,16 @@ enum JewelPromotion{
     AGILEPRMOTE = 3,
 }
 
+enum HeroType{
+    SABER = 0,
+    LANCER = 1,
+    ARCHER = 2,
+    CASTER = 3,
+    BASERKER = 4,
+    ASSASIN = 5,
+    RIDER = 6
+}
+
 
 
 class User{
@@ -87,6 +97,7 @@ class User{
 }
 
 class Hero{
+    heroID : string;
     isInTeam : boolean = false;
     name : string = "";
     quality  = 0;
@@ -98,29 +109,22 @@ class Hero{
     level = 1;
     currentExp = 0;
     totalExp = 0;
-    property : Property[] = [];
-    heroBitemap : egret.Bitmap;
+    properties : Property[] = [];
+    heroBitemapID : string;
     //__equipmentsOnEquip : Equipment[] = [];
     __weaponsOnEquip : Weapon[] = [];
     __armorOnEquip : Armor[] = [];
+    heroType = -1;
     color;
 
-    constructor(name : string, quality : Quality, level : number,heroBitmap : string){
+    constructor(heroID : string,name : string, quality : Quality, level : number,heroBitmapID : string,heroType : HeroType){
+       this.heroID = heroID;
        this.name = name;
        this.quality = quality;
        this.level = level;
-       this.heroBitemap = new egret.Bitmap();
-       this.heroBitemap.texture = RES.getRes(heroBitmap);
-       if(this.quality == Quality.WHITE)
-        this.color = 0xffffff;
-        if(this.quality == Quality.BLUE)
-        this.color = 0x0000dd;
-        if(this.quality == Quality.GREEN)
-        this.color = 0x00dd00;
-        if(this.quality == Quality.PURPLE)
-        this.color == 0x6c1f7c;
-        if(this.quality == Quality.ORAGE)
-        this.color = 0xf4a315;
+       this.heroBitemapID = heroBitmapID;
+       this.heroType = heroType;
+       this.color = GetColor.getColor(quality);
     }
 
      @Cache
@@ -130,11 +134,19 @@ class Hero{
      }
 
     public addWeapon(weapon : Weapon){
-       this.__weaponsOnEquip.push(weapon);
+       this.__weaponsOnEquip[0] = weapon;
     }
 
-    public addArmor(armor : Armor){
-       this.__armorOnEquip.push(armor);
+    public addHelment(helment : Armor){
+       this.__armorOnEquip[0] = helment;
+    }
+
+    public addCorseler(corseler : Armor){
+       this.__armorOnEquip[1] = corseler;
+    }
+
+    public addShoes(shoes : Armor){
+        this.__armorOnEquip[2] = shoes;
     }
 
     @Cache
@@ -143,7 +155,7 @@ class Hero{
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getFightPower() * 0.2);
         this.__armorOnEquip.forEach(armor => result += armor.getFightPower() * 0.8);
         result += this.level * 10 * this.quality;
-        this.property[0]=new Property("最大生命值",result,false);
+        this.properties[0]=new Property("最大生命值",result,false);
         return result;
     }
     
@@ -152,7 +164,7 @@ class Hero{
         var result = 0;
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getAttack() * 0.5);
         result += this.level * 5 * this.quality;
-        this.property[1]=new Property("攻击力",result,false);
+        this.properties[1]=new Property("攻击力",result,false);
         return result;
     }
 
@@ -161,7 +173,7 @@ class Hero{
         var result = 0;
         this.__armorOnEquip.forEach(armor => result += armor.getDefence() * 0.2);
         result += this.level * 2 * this.quality;
-        this.property[2]=new Property("防御力",result,false);
+        this.properties[2]=new Property("防御力",result,false);
         return result;
     }
 
@@ -171,7 +183,7 @@ class Hero{
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getAglie() * 0.4);
         this.__armorOnEquip.forEach(armor => result += armor.getAglie() * 0.4);
         result += this.level * 4 * this.quality;
-        this.property[3]=new Property("敏捷",result,false);
+        this.properties[3]=new Property("敏捷",result,false);
         return result;
     }
 
@@ -186,6 +198,7 @@ class Hero{
 }
 
 class Equipment{
+    equipmentID :string;
     quality  = 0;
     //level = 1;
     currentExp = 0;
@@ -194,7 +207,8 @@ class Equipment{
     isWeapon = false;
     name : string = "";
     __jewelOnEquip : Jewel[] = [];
-    equipmentBitmap : egret.Bitmap;
+    equipmentBitmapID : string;
+    properties : Property[] = [];
     color;
     //  @Cache
     //  getTotalExp(){
@@ -207,6 +221,7 @@ class Equipment{
         return 0;
     }
 
+
     public addJewl(jewel : Jewel){
         this.__jewelOnEquip.push(jewel);
     }
@@ -215,52 +230,52 @@ class Equipment{
 
 class Weapon extends Equipment{
      //attack = 0;
+     static weaponNum = 0;
+     weaponID : string;
      isWeapon = true;
      weaponType = 0;
-     property : Property[] = [];
 
-     constructor(name : string ,quality : number , weaponType : WeaponType,weaponIconId : string){
+     constructor(equipmentID :string,name : string ,quality : number , weaponType : WeaponType,weaponIconId : string){
          super();
+         this.equipmentID = equipmentID;
          this.name = name;
          this.quality = quality;
          //this.level = level;
          this.weaponType = weaponType;
-         this.equipmentBitmap = new egret.Bitmap();
-         this.equipmentBitmap.texture = RES.getRes(weaponIconId);
-         if(this.quality == Quality.WHITE)
-        this.color = 0xffffff;
-        if(this.quality == Quality.BLUE)
-        this.color = 0x0000dd;
-        if(this.quality == Quality.GREEN)
-        this.color = 0x00dd00;
-        if(this.quality == Quality.PURPLE)
-        this.color == 0x6c1f7c;
-        if(this.quality == Quality.ORAGE)
-        this.color = 0xf4a315;
+         this.equipmentBitmapID = weaponIconId;
+         this.color = GetColor.getColor(quality);
+         this.weaponID = Weapon.weaponNum.toString();
+         Weapon.weaponNum++;
 
      }
 
 
-     @Cache
+
      getAttack(){
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower() * 0.4);
          result += 10 * this.weaponType * this.quality; 
-         this.property[0]=new Property("攻击力",result,false);
+         this.properties[0]=new Property("攻击力",result,false);
          return result;
      }
 
-     @Cache
+
      getAglie(){
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower() * 0.4);
          result += 5 * this.quality / this.weaponType; 
-         this.property[1]=new Property("敏捷",result,false);
+         this.properties[1]=new Property("敏捷",result,false);
          return result;
+     }
+    
+
+     getEquipmentInformations(){
+         this.getAttack();
+         this.getAglie();
      }
 
 
-     @Cache
+
      getFightPower(){
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower());
@@ -271,55 +286,55 @@ class Weapon extends Equipment{
 
 class Armor extends Equipment{
      //defence = 0;
+     static armorNum = 0;
+     armorID : string;
      armorType = 0;
      isWeapon = false;
-     property : Property[] = [];
 
-     constructor(name : string,quality : number , armorType : ArmorType,armorIconId : string){
+     constructor(equipmentID : string,name : string,quality : number , armorType : ArmorType,armorIconId : string){
          super();
+         this.equipmentID = equipmentID;
          this.name = name;
          this.quality = quality;
          this.armorType = armorType;
-         this.equipmentBitmap = new egret.Bitmap();
-         this.equipmentBitmap.texture = RES.getRes(armorIconId);
-         if(this.quality == Quality.WHITE)
-        this.color = 0xffffff;
-        if(this.quality == Quality.BLUE)
-        this.color = 0x0000dd;
-        if(this.quality == Quality.GREEN)
-        this.color = 0x00dd00;
-        if(this.quality == Quality.PURPLE)
-        this.color == 0x6c1f7c;
-        if(this.quality == Quality.ORAGE)
-        this.color = 0xf4a315;
+         this.equipmentBitmapID = armorIconId;
+         this.color = GetColor.getColor(quality);
+         this.armorID = Armor.armorNum.toString();
+         Armor.armorNum++;
      }
 
      
 
-     @Cache
+
      getDefence(){
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower() * 0.4);
          result += 6 * this.armorType * this.quality; 
-         this.property[0]=new Property("防御力",result,false);
+         this.properties[0]=new Property("防御力",result,false);
          return result;
      }
 
-     @Cache
+
      getAglie(){
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower() * 0.4);
          result += 5 * this.quality / this.armorType; 
-         this.property[1]=new Property("敏捷",result,false);
+         this.properties[1]=new Property("敏捷",result,false);
          return result;
      }
 
-     @Cache
+
      getFightPower(){
          var result = 0;
          this.__jewelOnEquip.forEach(jewel => result += jewel.getFightPower());
          result += this.getDefence() * this.quality * 10 + this.getAglie() * this.quality * 5;
          return result;
+     }
+
+
+     getEquipmentInformations(){
+         this.getDefence();
+         this.getAglie();
      }
 }
 
@@ -330,17 +345,7 @@ class Jewel{
 
     constructor(quality : number){
         this.quality = quality;
-        if(this.quality == Quality.WHITE)
-        this.color = 0xffffff;
-        if(this.quality == Quality.BLUE)
-        this.color = 0x0000dd;
-        if(this.quality == Quality.GREEN)
-        this.color = 0x00dd00;
-        if(this.quality == Quality.PURPLE)
-        this.color == 0x6c1f7c;
-        if(this.quality == Quality.ORAGE)
-        this.color = 0xf4a315;
-
+        this.color = GetColor.getColor(quality);
     }
 
     @Cache
@@ -371,14 +376,35 @@ class Property{
 }
 
 class Properties{
-    all:string[] = [
+    public all:string[] = [
         "攻击力",
         "防御力",
         "敏捷",
         "品质"
     ]
+
+    public getpropertieName(){
+
+    }
 }
 
 class Package{
 
+}
+
+class GetColor{
+    static getColor(quality : Quality){
+        var color;
+        if(quality == Quality.WHITE)
+        color = 0xffffff;
+        if(quality == Quality.BLUE)
+        color = 0x0000dd;
+        if(quality == Quality.GREEN)
+        color = 0x00dd00;
+        if(quality == Quality.PURPLE)
+        color = 0x9a30d7;
+        if(quality == Quality.ORAGE)
+        color = 0xf4a315;
+        return color;
+    }
 }
