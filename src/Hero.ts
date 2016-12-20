@@ -127,7 +127,7 @@ class Hero{
        this.color = GetColor.getColor(quality);
     }
 
-     @Cache
+     //@Cache
      getTotalExp(){
          this.totalExp = (this.level + 50) * this.level;
          return this.totalExp;
@@ -149,7 +149,7 @@ class Hero{
         this.__armorOnEquip[2] = shoes;
     }
 
-    @Cache
+    //@Cache
     getMaxHP(){
         var result = 0;
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getFightPower() * 0.2);
@@ -159,7 +159,7 @@ class Hero{
         return result;
     }
     
-    @Cache
+    //@Cache
     getAttack(){
         var result = 0;
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getAttack() * 0.5);
@@ -168,7 +168,7 @@ class Hero{
         return result;
     }
 
-    @Cache
+    //@Cache
     getDefence(){
         var result = 0;
         this.__armorOnEquip.forEach(armor => result += armor.getDefence() * 0.2);
@@ -177,7 +177,7 @@ class Hero{
         return result;
     }
 
-    @Cache
+    //@Cache
     getAglie(){
         var result = 0;
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getAglie() * 0.4);
@@ -187,7 +187,7 @@ class Hero{
         return result;
     }
 
-    @Cache
+    //@Cache
     getFightPower(){
         var result = 0;
         this.__weaponsOnEquip.forEach(weapon => result += weapon.getFightPower());

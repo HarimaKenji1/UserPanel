@@ -122,6 +122,7 @@ var Hero = (function () {
         this.color = GetColor.getColor(quality);
     }
     var d = __define,c=Hero,p=c.prototype;
+    //@Cache
     p.getTotalExp = function () {
         this.totalExp = (this.level + 50) * this.level;
         return this.totalExp;
@@ -138,6 +139,7 @@ var Hero = (function () {
     p.addShoes = function (shoes) {
         this.__armorOnEquip[2] = shoes;
     };
+    //@Cache
     p.getMaxHP = function () {
         var result = 0;
         this.__weaponsOnEquip.forEach(function (weapon) { return result += weapon.getFightPower() * 0.2; });
@@ -146,6 +148,7 @@ var Hero = (function () {
         this.properties[0] = new Property("最大生命值", result, false);
         return result;
     };
+    //@Cache
     p.getAttack = function () {
         var result = 0;
         this.__weaponsOnEquip.forEach(function (weapon) { return result += weapon.getAttack() * 0.5; });
@@ -153,6 +156,7 @@ var Hero = (function () {
         this.properties[1] = new Property("攻击力", result, false);
         return result;
     };
+    //@Cache
     p.getDefence = function () {
         var result = 0;
         this.__armorOnEquip.forEach(function (armor) { return result += armor.getDefence() * 0.2; });
@@ -160,6 +164,7 @@ var Hero = (function () {
         this.properties[2] = new Property("防御力", result, false);
         return result;
     };
+    //@Cache
     p.getAglie = function () {
         var result = 0;
         this.__weaponsOnEquip.forEach(function (weapon) { return result += weapon.getAglie() * 0.4; });
@@ -168,6 +173,7 @@ var Hero = (function () {
         this.properties[3] = new Property("敏捷", result, false);
         return result;
     };
+    //@Cache
     p.getFightPower = function () {
         var result = 0;
         this.__weaponsOnEquip.forEach(function (weapon) { return result += weapon.getFightPower(); });
@@ -175,24 +181,6 @@ var Hero = (function () {
         result += (10 + this.getAttack() * 10 + this.getDefence() * 8 + this.getAglie() * 6) * this.level * this.quality;
         return result;
     };
-    __decorate([
-        Cache
-    ], p, "getTotalExp", null);
-    __decorate([
-        Cache
-    ], p, "getMaxHP", null);
-    __decorate([
-        Cache
-    ], p, "getAttack", null);
-    __decorate([
-        Cache
-    ], p, "getDefence", null);
-    __decorate([
-        Cache
-    ], p, "getAglie", null);
-    __decorate([
-        Cache
-    ], p, "getFightPower", null);
     return Hero;
 }());
 egret.registerClass(Hero,'Hero');
