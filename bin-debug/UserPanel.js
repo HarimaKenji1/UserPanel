@@ -122,6 +122,7 @@ var UserPanel = (function (_super) {
 egret.registerClass(UserPanel,'UserPanel');
 var EquipmentInformationPanel = (function (_super) {
     __extends(EquipmentInformationPanel, _super);
+    //private jewelFields : egret.TextField[] = [];
     function EquipmentInformationPanel() {
         _super.call(this);
         this.width = 250;
@@ -155,6 +156,13 @@ var EquipmentInformationPanel = (function (_super) {
         this.propertiesField.size = 20;
         this.propertiesField.x = 30;
         this.propertiesField.y = this.nameField.y + 55;
+        this.jewelInformationField = new egret.TextField();
+        this.jewelInformationField.width = 200;
+        this.jewelInformationField.height = 300;
+        this.addChild(this.jewelInformationField);
+        this.jewelInformationField.size = 20;
+        this.jewelInformationField.x = 30;
+        this.jewelInformationField.y = this.propertiesField.y + 110;
     }
     var d = __define,c=EquipmentInformationPanel,p=c.prototype;
     p.showEquipmentInformation = function (equipment) {
@@ -166,6 +174,11 @@ var EquipmentInformationPanel = (function (_super) {
             information = information + equipment.properties[i].name + " : " + equipment.properties[i].value.toFixed(0) + "\n" + "\n" + "\n";
         }
         this.propertiesField.text = information;
+        information = "镶嵌宝石 ： \n\n";
+        for (var i = 0; i < equipment.__jewelOnEquip.length; i++) {
+            information = information + equipment.__jewelOnEquip[i].name + "\n\n";
+        }
+        this.jewelInformationField.text = information;
     };
     return EquipmentInformationPanel;
 }(egret.DisplayObjectContainer));

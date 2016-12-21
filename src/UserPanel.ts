@@ -149,6 +149,8 @@ class EquipmentInformationPanel extends egret.DisplayObjectContainer{
     private equipmentIconBitmap : egret.Bitmap;
     private nameField : egret.TextField;
     private propertiesField : egret.TextField;
+    private jewelInformationField : egret.TextField;
+    //private jewelFields : egret.TextField[] = [];
 
     constructor(){
         super();
@@ -188,6 +190,14 @@ class EquipmentInformationPanel extends egret.DisplayObjectContainer{
         this.propertiesField.size = 20;
         this.propertiesField.x = 30;
         this.propertiesField.y = this.nameField.y + 55;
+
+        this.jewelInformationField = new egret.TextField();
+        this.jewelInformationField.width = 200;
+        this.jewelInformationField.height = 300;
+        this.addChild(this.jewelInformationField);
+        this.jewelInformationField.size = 20;
+        this.jewelInformationField.x = 30;
+        this.jewelInformationField.y = this.propertiesField.y + 110;
     }
 
     public showEquipmentInformation(equipment : Equipment){
@@ -201,5 +211,12 @@ class EquipmentInformationPanel extends egret.DisplayObjectContainer{
             information = information + equipment.properties[i].name + " : " + equipment.properties[i].value.toFixed(0) + "\n" + "\n" + "\n";
         }
         this.propertiesField.text = information;
+
+        information = "镶嵌宝石 ： \n\n";
+        for(let i = 0; i < equipment.__jewelOnEquip.length; i++){
+            information = information + equipment.__jewelOnEquip[i].name +"\n\n" 
+            //this.jewelInformationField.textColor = equipment.__jewelOnEquip[i].color;
+        }
+        this.jewelInformationField.text = information;
     }
 }

@@ -339,11 +339,16 @@ class Armor extends Equipment{
 }
 
 class Jewel{
+    jewelID : string;
+    static num : number = 0;
+    name : string;
     quality  = 0;
     color;
     //promotionType = 0;
 
-    constructor(quality : number){
+    constructor(jewelID : string,name : string,quality : number){
+        this.jewelID = jewelID;
+        this.name = name;
         this.quality = quality;
         this.color = GetColor.getColor(quality);
     }

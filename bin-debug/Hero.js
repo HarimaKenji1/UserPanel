@@ -307,8 +307,10 @@ var Armor = (function (_super) {
 egret.registerClass(Armor,'Armor');
 var Jewel = (function () {
     //promotionType = 0;
-    function Jewel(quality) {
+    function Jewel(jewelID, name, quality) {
         this.quality = 0;
+        this.jewelID = jewelID;
+        this.name = name;
         this.quality = quality;
         this.color = GetColor.getColor(quality);
     }
@@ -318,6 +320,7 @@ var Jewel = (function () {
         result = this.quality * 10;
         return result;
     };
+    Jewel.num = 0;
     __decorate([
         Cache
     ], p, "getFightPower", null);

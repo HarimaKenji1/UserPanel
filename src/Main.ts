@@ -263,8 +263,8 @@ class Main extends egret.DisplayObjectContainer {
          this.helment = new Armor("A001","Purplrhelment01",Quality.PURPLE,ArmorType.LIGHTARMOR,"PurpleHelmet01_png");
          this.corseler = new Armor("A002","GreenCorseler01",Quality.GREEN,ArmorType.LIGHTARMOR,"GreenCorseler01_png");
          this.shoes = new Armor("A003","BlueShoes01",Quality.BLUE,ArmorType.LIGHTARMOR,"BlueShoes01_png");
-         this.weaponJewel = new Jewel(Quality.ORAGE);
-         this.armorJewel = new Jewel(Quality.WHITE);
+         this.weaponJewel = new Jewel("J001","传说武器宝石",Quality.ORAGE);
+         this.armorJewel = new Jewel("J002","普通防具宝石",Quality.WHITE);
          
          this.sword.addJewl(this.weaponJewel);
          this.helment.addJewl(this.armorJewel);
